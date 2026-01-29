@@ -25,7 +25,7 @@ Here are some constraints to guide the implementation:
 
 The list of commands and their usage is given below:
 
-```terminal
+```bash
 # Adding a new task
 task-cli add "Buy groceries"
 # Output: Task added successfully (ID: 1)
