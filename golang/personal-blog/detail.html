@@ -1,38 +1,32 @@
 <!DOCTYPE html>
 <html lang="id">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Artikel - Blog</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap"
-        rel="stylesheet">
-    <style>
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-        }
-
-        /* Font khusus body artikel agar enak dibaca panjang */
-        .article-body {
-            font-family: 'Merriweather', serif;
-        }
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Merriweather:ital,wght@0,300;0,400;0,700;1,300&display=swap" rel="stylesheet">
+    <style> 
+        body { font-family: 'Plus Jakarta Sans', sans-serif; } 
+        .article-body { font-family: 'Merriweather', serif; }
+        /* Style tambahan untuk elemen HTML dari editor WYSIWYG */
+        .article-body p { margin-bottom: 1.5rem; line-height: 1.8; }
+        .article-body h1, .article-body h2, .article-body h3 { font-weight: 700; color: #1e293b; margin-top: 2rem; margin-bottom: 1rem; }
+        .article-body h1 { font-size: 1.875rem; }
+        .article-body h2 { font-size: 1.5rem; }
+        .article-body ul { list-style-type: disc; padding-left: 1.5rem; margin-bottom: 1.5rem; }
+        .article-body ol { list-style-type: decimal; padding-left: 1.5rem; margin-bottom: 1.5rem; }
+        .article-body blockquote { border-left: 4px solid #6366f1; padding-left: 1rem; font-style: italic; color: #475569; margin-bottom: 1.5rem; }
+        .article-body a { color: #4f46e5; text-decoration: underline; }
     </style>
 </head>
-
 <body class="bg-white text-slate-800 min-h-screen">
 
-    <!-- Navbar Minimal -->
     <nav class="border-b border-slate-100 sticky top-0 bg-white/80 backdrop-blur-md z-10">
         <div class="max-w-3xl mx-auto px-6 h-16 flex items-center justify-between">
-            <a href="home.html"
-                class="flex items-center text-slate-500 hover:text-indigo-600 transition-colors gap-2 text-sm font-semibold">
-                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                        d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
-                </svg>
+            <a href="home.html" class="flex items-center text-slate-500 hover:text-indigo-600 transition-colors gap-2 text-sm font-semibold">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path></svg>
                 Kembali ke Home
             </a>
             <span class="text-sm font-bold text-slate-900">Blog.</span>
@@ -40,36 +34,27 @@
     </nav>
 
     <main class="max-w-3xl mx-auto px-6 py-12">
-
+        
         <div id="content-area" class="hidden animate-fade-in-up">
-            <!-- Meta Header -->
             <div class="flex items-center gap-3 mb-6">
-                <span
-                    class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Article</span>
+                <span class="bg-indigo-100 text-indigo-700 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wide">Article</span>
                 <span id="article-date" class="text-slate-500 text-sm font-medium"></span>
             </div>
 
-            <!-- Title -->
             <h1 id="article-title" class="text-4xl sm:text-5xl font-extrabold text-slate-900 mb-8 leading-tight"></h1>
 
-            <!-- Author Info -->
             <div class="flex items-center gap-3 mb-10 pb-10 border-b border-slate-100">
-                <div
-                    class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center text-slate-500 font-bold">
-                    A</div>
+                <div class="w-10 h-10 bg-slate-200 rounded-full flex items-center justify-center text-slate-500 font-bold">A</div>
                 <div>
                     <p class="text-sm font-bold text-slate-900">Admin Penulis</p>
                     <p class="text-xs text-slate-500">Editor Utama</p>
                 </div>
             </div>
-
+            
             <!-- Body Content -->
-            <div id="article-body" class="article-body text-lg text-slate-700 leading-loose space-y-6">
-                <!-- Content Here -->
-            </div>
+            <div id="article-body" class="article-body text-lg text-slate-700 leading-loose"></div>
         </div>
 
-        <!-- 404 State -->
         <div id="not-found" class="hidden text-center py-20">
             <h2 class="text-2xl font-bold text-slate-300">404</h2>
             <p class="text-slate-500 mt-2">Artikel tidak ditemukan.</p>
@@ -96,8 +81,9 @@
                 document.getElementById('content-area').classList.remove('hidden');
                 document.getElementById('article-title').innerText = article.title;
                 document.getElementById('article-date').innerText = article.date;
-                // Convert newline to paragraph
-                document.getElementById('article-body').innerHTML = article.content.split('\n').map(p => `<p>${p}</p>`).join('');
+                
+                // Perbaikan: Langsung inject HTML karena data dari editor sudah berupa HTML
+                document.getElementById('article-body').innerHTML = article.content;
                 
             } catch (err) {
                 document.getElementById('not-found').classList.remove('hidden');
@@ -108,5 +94,4 @@
         else document.getElementById('not-found').classList.remove('hidden');
     </script>
 </body>
-
 </html>
