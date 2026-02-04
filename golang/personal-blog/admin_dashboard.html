@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Blog Admin</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Plus Jakarta Sans', sans-serif; } </style>
+</head>
+<body class="bg-slate-50 min-h-screen">
+
+    <!-- Navbar -->
+    <nav class="bg-white border-b border-slate-200 sticky top-0 z-10">
+        <div class="max-w-5xl mx-auto px-6 h-16 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="w-8 h-8 bg-indigo-600 rounded-lg flex items-center justify-center text-white font-bold text-sm">B</div>
+                <span class="font-bold text-slate-800 text-lg">Admin Panel</span>
+            </div>
+            <button onclick="logout()" class="text-sm font-medium text-slate-500 hover:text-red-600 transition-colors">
+                Keluar
+            </button>
+        </div>
+    </nav>
+
+    <main class="max-w-5xl mx-auto px-6 py-10">
+        <!-- Header Section -->
+        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-8 gap-4">
+            <div>
+                <h1 class="text-2xl font-bold text-slate-900">Kelola Artikel</h1>
+                <p class="text-slate-500 text-sm mt-1">Buat, sunting, atau hapus artikel blog Anda.</p>
+            </div>
+            <a href="admin_editor.html" class="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-700 text-white px-5 py-2.5 rounded-xl font-medium shadow-lg shadow-indigo-200 transition-all active:scale-95">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                Artikel Baru
+            </a>
+        </div>
+
+        <!-- List Container -->
+        <div class="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden">
+            <div id="admin-list" class="divide-y divide-slate-100">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+    </main>
+
+    <script>
+        const token = localStorage.getItem('admin_token');
+        if (!token) window.location.href = 'login.html';
+
+        // Load Articles dari Backend
+        async function loadArticles() {
+            try {
+                const res = await fetch('http://localhost:8080/articles');
+                const articles = await res.json();
+                const container = document.getElementById('admin-list');
+
+                if (!articles || articles.length === 0) {
+                    container.innerHTML = `<div class="p-8 text-center text-slate-400">Belum ada artikel.</div>`;
+                    return;
+                }
+
+                container.innerHTML = articles.map(item => `
+                    <div class="p-5 flex items-center justify-between hover:bg-slate-50 transition-colors group border-b border-slate-50 last:border-0">
+                        <div class="flex-1 pr-4">
+                            <h3 class="font-semibold text-slate-800 text-lg">${item.title}</h3>
+                            <p class="text-slate-400 text-xs mt-1 font-medium tracking-wide uppercase">${item.date}</p>
+                        </div>
+                        <div class="flex items-center gap-3">
+                            <a href="admin_editor.html?id=${item.id}" class="px-4 py-2 text-sm font-medium text-indigo-600 bg-indigo-50 rounded-lg hover:bg-indigo-100 transition-colors">
+                                Edit
+                            </a>
+                            <button onclick="deleteArticle(${item.id})" class="p-2 text-slate-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                            </button>
+                        </div>
+                    </div>
+                `).join('');
+            } catch (err) {
+                console.error("Gagal memuat artikel", err);
+            }
+        }
+
+        async function deleteArticle(id) {
+            if(!confirm('Yakin ingin menghapus artikel ini?')) return;
+
+            try {
+                const res = await fetch(`http://localhost:8080/articles/${id}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Authorization': `Bearer ${token}` // Kirim Token JWT
+                    }
+                });
+
+                if (res.ok) {
+                    loadArticles(); // Reload list
+                } else {
+                    alert("Gagal menghapus (Unauthorized?)");
+                }
+            } catch (err) {
+                alert("Server error");
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('admin_token');
+            window.location.href = 'login.html';
+        }
+
+        // Init
+        loadArticles();
+    </script>
+</body>
+</html>
