@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personal Blog</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style> body { font-family: 'Plus Jakarta Sans', sans-serif; } </style>
+</head>
+<body class="bg-slate-50 text-slate-800 min-h-screen flex flex-col">
+
+    <!-- Header / Hero Section -->
+    <header class="bg-white border-b border-slate-200 pt-16 pb-12 px-6 text-center">
+        <h1 class="text-4xl sm:text-5xl font-extrabold text-slate-900 tracking-tight mb-4">
+            Insight & <span class="text-indigo-600">Ideas.</span>
+        </h1>
+        <p class="text-slate-500 text-lg max-w-xl mx-auto">
+            Kumpulan tulisan, tutorial, dan pemikiran pribadi seputar teknologi dan desain.
+        </p>
+    </header>
+
+    <main class="flex-grow max-w-4xl mx-auto px-6 py-12 w-full">
+        <div id="public-list" class="grid gap-6 sm:grid-cols-1">
+            <div class="animate-pulse space-y-4">
+                <div class="h-40 bg-slate-200 rounded-2xl"></div>
+                <div class="h-40 bg-slate-200 rounded-2xl"></div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-white border-t border-slate-200 py-8 text-center">
+        <p class="text-slate-400 text-sm mb-2">&copy; 2024 Personal Blog.</p>
+    </footer>
+
+    <script>
+        // Fungsi helper untuk menghapus tag HTML agar preview teks bersih
+        function stripHtml(html) {
+           let tmp = document.createElement("DIV");
+           tmp.innerHTML = html;
+           return tmp.textContent || tmp.innerText || "";
+        }
+
+        async function loadPublicArticles() {
+            const container = document.getElementById('public-list');
+            try {
+                const res = await fetch('http://localhost:8080/articles');
+                const articles = await res.json();
+
+                if (!articles || articles.length === 0) {
+                    container.innerHTML = `
+                        <div class="text-center py-12 bg-white rounded-2xl border border-slate-100 shadow-sm">
+                            <p class="text-slate-400">Belum ada artikel yang diterbitkan.</p>
+                        </div>`;
+                    return;
+                }
+
+                container.innerHTML = articles.map(item => {
+                    // Bersihkan HTML tags dulu, baru potong untuk preview
+                    const cleanText = stripHtml(item.content);
+                    const preview = cleanText.length > 150 ? cleanText.substring(0, 150) + "..." : cleanText;
+                    
+                    return `
+                    <div onclick="window.location.href='detail.html?id=${item.id}'" class="bg-white p-6 sm:p-8 rounded-2xl border border-slate-100 shadow-sm hover:shadow-xl hover:shadow-indigo-50 hover:-translate-y-1 transition-all duration-300 cursor-pointer group">
+                        <div class="flex flex-col sm:flex-row sm:items-baseline sm:justify-between mb-2">
+                            <span class="text-xs font-bold tracking-wider text-indigo-600 uppercase bg-indigo-50 px-2 py-1 rounded-md mb-2 sm:mb-0 w-fit">${item.date}</span>
+                        </div>
+                        <h2 class="text-2xl font-bold text-slate-900 mb-3 group-hover:text-indigo-600 transition-colors">${item.title}</h2>
+                        <p class="text-slate-500 leading-relaxed mb-4 line-clamp-3">${preview}</p>
+                        <div class="flex items-center text-indigo-600 font-semibold text-sm group-hover:underline">
+                            Baca selengkapnya
+                            <svg class="w-4 h-4 ml-1 transition-transform group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+                        </div>
+                    </div>`;
+                }).join('');
+
+            } catch (err) {
+                container.innerHTML = '<p class="text-center text-red-500">Gagal memuat artikel dari server.</p>';
+            }
+        }
+
+        loadPublicArticles();
+    </script>
+</body>
+</html>
