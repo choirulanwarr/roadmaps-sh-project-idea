@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌤️ Weather API - Roadmaps.sh Project</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="icon"
+        href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌤️</text></svg>">
+</head>
+
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header class="header">
+            <h1 class="logo">🌤️ Weather API</h1>
+            <p class="subtitle">Built with Go Backend & Pure HTML</p>
+        </header>
+
+        <!-- Search Form -->
+        <div class="search-container">
+            <form id="weatherForm" class="search-form">
+                <input type="text" id="cityInput" class="search-input" placeholder="Enter city name..."
+                    autocomplete="off" required>
+                <button type="submit" class="search-btn">
+                    <span class="btn-text">Search</span>
+                    <span class="btn-loader" id="btnLoader"></span>
+                </button>
+            </form>
+            <div class="example-cities">
+                <span>Try:</span>
+                <button type="button" class="example-btn" data-city="Jakarta">Jakarta</button>
+                <button type="button" class="example-btn" data-city="Tokyo">Tokyo</button>
+                <button type="button" class="example-btn" data-city="New York">New York</button>
+                <button type="button" class="example-btn" data-city="London">London</button>
+            </div>
+        </div>
+
+        <!-- Loading State -->
+        <div class="loading-container" id="loadingContainer" style="display: none;">
+            <div class="loading-spinner"></div>
+            <p class="loading-text">Fetching weather data...</p>
+        </div>
+
+        <!-- Error Message -->
+        <div class="error-container" id="errorContainer" style="display: none;">
+            <div class="error-icon">⚠️</div>
+            <h3 class="error-title" id="errorTitle">Error</h3>
+            <p class="error-message" id="errorMessage">Something went wrong</p>
+            <button class="error-btn" onclick="location.reload()">Try Again</button>
+        </div>
+
+        <!-- Weather Result -->
+        <div class="weather-container" id="weatherContainer" style="display: none;">
+            <!-- City Info -->
+            <div class="weather-header">
+                <h2 class="city-name" id="cityName">Jakarta</h2>
+                <p class="country" id="country">Indonesia</p>
+                <p class="last-updated" id="lastUpdated">Last updated: Just now</p>
+                <span class="cache-badge" id="cacheBadge">Cached</span>
+            </div>
+
+            <!-- Main Weather -->
+            <div class="weather-main">
+                <div class="weather-icon" id="weatherIcon">🌤️</div>
+                <div class="weather-temp">
+                    <span class="temp-value" id="tempValue">28</span>
+                    <span class="temp-unit">°C</span>
+                </div>
+                <div class="weather-condition" id="weatherCondition">Partly Cloudy</div>
+                <div class="weather-feelslike" id="feelsLike">Feels like 30°C</div>
+            </div>
+
+            <!-- Details Grid -->
+            <div class="weather-details">
+                <div class="detail-card">
+                    <div class="detail-icon">💧</div>
+                    <div class="detail-label">Humidity</div>
+                    <div class="detail-value" id="humidity">75%</div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-icon">💨</div>
+                    <div class="detail-label">Wind Speed</div>
+                    <div class="detail-value" id="windSpeed">12 km/h</div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-icon">🌡️</div>
+                    <div class="detail-label">Pressure</div>
+                    <div class="detail-value" id="pressure">1012 hPa</div>
+                </div>
+                <div class="detail-card">
+                    <div class="detail-icon">👁️</div>
+                    <div class="detail-label">Visibility</div>
+                    <div class="detail-value" id="visibility">10 km</div>
+                </div>
+            </div>
+
+            <!-- Description -->
+            <div class="weather-description" id="weatherDescription">
+                Partly cloudy with a chance of rain later today.
+            </div>
+        </div>
+
+        <!-- API Info -->
+        <div class="api-info">
+            <h3>🔧 API Information</h3>
+            <div class="api-endpoint">
+                <code>GET /api/weather?city={city_name}</code>
+            </div>
+            <div class="api-example">
+                <p>Example:</p>
+                <code>curl "http://localhost:8080/api/weather?city=Jakarta"</code>
+            </div>
+            <div class="api-note">
+                <p>✅ Rate Limit: 100 requests per hour per IP</p>
+                <p>✅ Caching: 12 hours (Redis)</p>
+                <p>✅ Powered by Visual Crossing Weather API</p>
+            </div>
+        </div>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <p>Made with ❤️ for <a href="https://roadmaps.sh" target="_blank">roadmaps.sh</a> project ideas</p>
+            <p>Backend: Go | Frontend: Pure HTML/CSS/JS</p>
+        </footer>
+    </div>
+
+    <script src="/js/app.js"></script>
+</body>
+
+</html>
