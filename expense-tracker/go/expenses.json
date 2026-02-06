@@ -1,0 +1,13 @@
+{
+  "expenses": [
+    {
+      "id": 1,
+      "date": "2026-01-29T10:45:48.409422+07:00",
+      "description": "Kopi",
+      "amount": 5,
+      "category": "General"
+    }
+  ],
+  "next_id": 2,
+  "budget": 0
+}
